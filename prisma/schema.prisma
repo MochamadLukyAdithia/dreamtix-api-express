@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model User {
+  id_user  Int      @id @default(autoincrement())
+  username  String   @db.VarChar(255) @unique
+  name      String   @db.VarChar(255)
+  email     String   @unique
+  password  String   @db.VarChar(255)
+  role      String   @db.VarChar(255)
+  token     String?  @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  events    Event[]
+
+  @@map("users")
+}
+
+model Event {
+  id_event   Int      @id @default(autoincrement())
+  name        String   @db.VarChar(255)
+  description String   @db.VarChar(255)
+  date        DateTime
+  location    String   @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  id_user Int
+  user     User    @relation(fields: [id_user], references: [id_user])
+  tikets   Tiket[]
+
+  @@map("events")
+}
+
+model Tiket {
+  id_tiket  Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  id_event Int
+  event     Event @relation(fields: [id_event], references: [id_event])
+
+  @@map("tikets")
+}
