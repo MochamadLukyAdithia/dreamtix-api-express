@@ -2,432 +2,77 @@ import express from "express";
 import userController from "../controller/user-controller.js";
 import eventController from "../controller/events-controller.js";
 import tiketController from "../controller/tikets-controller.js";
-import {authMiddleware} from "../middleware/auth-middleware.js";
+// import {authMiddleware} from "../middleware/auth-middleware.js";
+import adminController from "../controller/admin-controller.js";
+import { authenticate } from "../helper/jwtHelper.js";
+import categoryController from "../controller/category-controller.js";
+import pesananController from "../controller/pesanan-controller.js";
+import cartController from "../controller/cart-controller.js";
+import qrController from "../controller/qr-controller.js";
+import transaksiController from "../controller/transaksi-controller.js";
+import metodeController from "../controller/metode-controller.js";
+import metodeService from "../service/metode-service.js";
 
 const userRouter = new express.Router();
-userRouter.use(authMiddleware);
-// /**
-//  * @swagger
-//  * tags:
-//  *   name: Users
-//  *   description: User management API
-//  */
+// userRouter.use(authMiddleware);
 
-// /**
-//  * @swagger
-//  * /api/users:
-//  *   post:
-//  *     summary: Register a new user
-//  *     tags: [Users]
-//  *     requestBody:
-//  *       required: true
-//  *       content:
-//  *         application/json:
-//  *           schema:
-//  *             type: object
-//  *             required:
-//  *               - username
-//  *               - password
-//  *               - name
-//  *             properties:
-//  *               username:
-//  *                 type: string
-//  *               password:
-//  *                 type: string
-//  *               name:
-//  *                 type: string
-//  *     responses:
-//  *       200:
-//  *         description: User registered successfully
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 data:
-//  *                   type: object
-//  *                   properties:
-//  *                     username:
-//  *                       type: string
-//  *                     name:
-//  *                       type: string
-//  *       400:
-//  *         description: Username already registered
-//  */
-
-// /**
-//  * @swagger
-//  * /api/users/login:
-//  *   post:
-//  *     summary: Login user
-//  *     tags: [Users]
-//  *     requestBody:
-//  *       required: true
-//  *       content:
-//  *         application/json:
-//  *           schema:
-//  *             type: object
-//  *             required:
-//  *               - username
-//  *               - password
-//  *             properties:
-//  *               username:
-//  *                 type: string
-//  *               password:
-//  *                 type: string
-//  *     responses:
-//  *       200:
-//  *         description: Login success
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 data:
-//  *                   type: object
-//  *                   properties:
-//  *                     token:
-//  *                       type: string
-//  *       400:
-//  *         description: Username or password wrong
-//  */
-
-// /**
-//  * @swagger
-//  * /api/users/current:
-//  *   patch:
-//  *     summary: Update current user
-//  *     tags: [Users]
-//  *     security:
-//  *       - bearerAuth: []
-//  *     requestBody:
-//  *       required: false
-//  *       content:
-//  *         application/json:
-//  *           schema:
-//  *             type: object
-//  *             properties:
-//  *               name:
-//  *                 type: string
-//  *               password:
-//  *                 type: string
-//  *     responses:
-//  *       200:
-//  *         description: Update success
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 data:
-//  *                   type: object
-//  *                   properties:
-//  *                     username:
-//  *                       type: string
-//  *                     name:
-//  *                       type: string
-//  *       400:
-//  *         description: Name length max 100
-//  */
-
-// /**
-//  * @swagger
-//  * /api/users/current:
-//  *   get:
-//  *     summary: Get current user info
-//  *     tags: [Users]
-//  *     security:
-//  *       - bearerAuth: []
-//  *     responses:
-//  *       200:
-//  *         description: Successfully retrieved user data
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 data:
-//  *                   type: object
-//  *                   properties:
-//  *                     username:
-//  *                       type: string
-//  *                     name:
-//  *                       type: string
-//  *       401:
-//  *         description: Unauthorized
-//  */
-
-// /**
-//  * @swagger
-//  * /api/users/logout:
-//  *   delete:
-//  *     summary: Logout user
-//  *     tags: [Users]
-//  *     security:
-//  *       - bearerAuth: []
-//  *     responses:
-//  *       200:
-//  *         description: Logout success
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 data:
-//  *                   type: string
-//  *                   example: OK
-//  *       401:
-//  *         description: Unauthorized
-//  */
-
-// User API
-userRouter.get('/api/users/current', userController.get);
+// Customer
+userRouter.get('/api/users/current', authenticate ,userController.get);
 userRouter.patch('/api/users/current', userController.update);
-userRouter.delete('/api/users/logout', userController.logout);
+userRouter.update('/api/users/logout', userController.logout);
 
-// /**
-//  * @swagger
-//  * tags:
-//  *   name: Contacts
-//  *   description: API untuk mengelola kontak pengguna
-//  */
+// Admin
+userRouter.get('/api/admin/current', authenticate,adminController.get);
+userRouter.post('/api/admin/login', adminController.login);
+userRouter.patch('/api/admin/:id_admin', adminController.update);
 
-// /**
-//  * @swagger
-//  * components:
-//  *   schemas:
-//  *     Contact:
-//  *       type: object
-//  *       properties:
-//  *         id:
-//  *           type: integer
-//  *         first_name:
-//  *           type: string
-//  *         last_name:
-//  *           type: string
-//  *         email:
-//  *           type: string
-//  *         phone:
-//  *           type: string
-//  *     ContactInput:
-//  *       type: object
-//  *       required:
-//  *         - first_name
-//  *         - last_name
-//  *         - email
-//  *         - phone
-//  *       properties:
-//  *         first_name:
-//  *           type: string
-//  *         last_name:
-//  *           type: string
-//  *         email:
-//  *           type: string
-//  *         phone:
-//  *           type: string
-//  *     Paging:
-//  *       type: object
-//  *       properties:
-//  *         page:
-//  *           type: integer
-//  *         total_page:
-//  *           type: integer
-//  *         total_item:
-//  *           type: integer
-//  *     ErrorResponse:
-//  *       type: object
-//  *       properties:
-//  *         errors:
-//  *           type: string
-//  */
+// Cart
+userRouter.post('/api/cart',authenticate, cartController.create);
+userRouter.get("/api/cart/:id_cart", authenticate, cartController.get);
+userRouter.get('/api/cart/', authenticate, cartController.getAll);
+userRouter.patch('/api/cart/:id_cart', cartController.update);
+userRouter.delete("/api/pesanan/id_cart", cartController.hapus);
+userRouter.delete("/api/pesanan/", cartController.deleteAll);
 
-// /**
-//  * @swagger
-//  * /api/contacts:
-//  *   post:
-//  *     summary: Create a contact
-//  *     tags: [Contacts]
-//  *     security:
-//  *       - bearerAuth: []
-//  *     requestBody:
-//  *       required: true
-//  *       content:
-//  *         application/json:
-//  *           schema:
-//  *             $ref: '#/components/schemas/ContactInput'
-//  *     responses:
-//  *       200:
-//  *         description: Contact created
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 data:
-//  *                   $ref: '#/components/schemas/Contact'
-//  *       400:
-//  *         description: Validation error
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               $ref: '#/components/schemas/ErrorResponse'
-//  */
 
-// /**
-//  * @swagger
-//  * /api/contacts/{id}:
-//  *   put:
-//  *     summary: Update a contact by ID
-//  *     tags: [Contacts]
-//  *     security:
-//  *       - bearerAuth: []
-//  *     parameters:
-//  *       - in: path
-//  *         name: id
-//  *         required: true
-//  *         schema:
-//  *           type: integer
-//  *     requestBody:
-//  *       required: true
-//  *       content:
-//  *         application/json:
-//  *           schema:
-//  *             $ref: '#/components/schemas/ContactInput'
-//  *     responses:
-//  *       200:
-//  *         description: Contact updated
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 data:
-//  *                   $ref: '#/components/schemas/Contact'
-//  *       400:
-//  *         description: Validation error
-//  */
+// Event
+userRouter.post('/api/events',authenticate ,eventController.create);
+userRouter.get('/api/events', authenticate, eventController.getAll);
+userRouter.get('/api/events/:id_event',authenticate, eventController.get);
+userRouter.patch('/api/events/:id_event', eventController.update);
 
-// /**
-//  * @swagger
-//  * /api/contacts/{id}:
-//  *   get:
-//  *     summary: Get a contact by ID
-//  *     tags: [Contacts]
-//  *     security:
-//  *       - bearerAuth: []
-//  *     parameters:
-//  *       - in: path
-//  *         name: id
-//  *         required: true
-//  *         schema:
-//  *           type: integer
-//  *     responses:
-//  *       200:
-//  *         description: Contact retrieved
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 data:
-//  *                   $ref: '#/components/schemas/Contact'
-//  *       404:
-//  *         description: Contact not found
-//  */
 
-// /**
-//  * @swagger
-//  * /api/contacts:
-//  *   get:
-//  *     summary: Search contacts
-//  *     tags: [Contacts]
-//  *     security:
-//  *       - bearerAuth: []
-//  *     parameters:
-//  *       - in: query
-//  *         name: name
-//  *         schema:
-//  *           type: string
-//  *         description: Search by first or last name
-//  *       - in: query
-//  *         name: email
-//  *         schema:
-//  *           type: string
-//  *       - in: query
-//  *         name: phone
-//  *         schema:
-//  *           type: string
-//  *       - in: query
-//  *         name: page
-//  *         schema:
-//  *           type: integer
-//  *           default: 1
-//  *       - in: query
-//  *         name: size
-//  *         schema:
-//  *           type: integer
-//  *           default: 10
-//  *     responses:
-//  *       200:
-//  *         description: Contacts found
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 data:
-//  *                   type: array
-//  *                   items:
-//  *                     $ref: '#/components/schemas/Contact'
-//  *                 paging:
-//  *                   $ref: '#/components/schemas/Paging'
-//  */
+// Category
+userRouter.post('/api/category/', categoryController.create);
+userRouter.get('/api/category/:id_category',categoryController.get);
+userRouter.get('/api/category/', categoryController.getAll);
+userRouter.patch("/api/category/:id_category", categoryController.update);
 
-// /**
-//  * @swagger
-//  * /api/contacts/{id}:
-//  *   delete:
-//  *     summary: Delete contact by ID
-//  *     tags: [Contacts]
-//  *     security:
-//  *       - bearerAuth: []
-//  *     parameters:
-//  *       - in: path
-//  *         name: id
-//  *         required: true
-//  *         schema:
-//  *           type: integer
-//  *     responses:
-//  *       200:
-//  *         description: Contact deleted
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 data:
-//  *                   type: string
-//  *                   example: OK
-//  *       404:
-//  *         description: Contact not found
-//  */
+// Pesanan
+userRouter.post('/api/pesanan/',authenticate, pesananController.create);
+userRouter.get('/api/pesanan', pesananController.getAll);
+userRouter.get("/api/pesanan/:id_pesan", pesananController.get);
+userRouter.patch("/api/pesanana/:id_pesan", pesananController.update)
 
-// Event API
-userRouter.post('/api/events', eventController.create);
-userRouter.get('/api/events/', eventController.getCurrent);
-userRouter.get('/api/events/:id_event', eventController.get);
-userRouter.put('/api/events/:id_event', eventController.update);
-userRouter.delete('/api/events/:id_event', eventController.remove);
-userRouter.get('/api/events', eventController.search);
+// Qr
+userRouter.get('/api/events/:id_event/tikets/:id_tiket/qr/sender', qrController.sender);
+userRouter.get('/api/events/:id_event/tikets/:id_tiket/qr', qrController.getAll);
+userRouter.get('/api/events/:id_event/tikets/:id_tiket/qr/many', qrController.getMany);
+userRouter.patch('/api/events/:id_event/tikets/:id_tiket/qr/:kode_qr', qrController.update);
 
-// Tikets API
+// Tiket
 userRouter.post('/api/events/:id_event/tikets', tiketController.create);
 userRouter.get('/api/events/:id_event/tikets/:id_tiket', tiketController.get);
 userRouter.put('/api/events/:id_event/tikets/:id_tiket', tiketController.update);
 userRouter.delete('/api/events/:id_event/tikets/:id_tiket', tiketController.remove);
-userRouter.get('/api/events/:id_event/tikets', tiketController.list);
 
+// Transaksi
+userRouter.post("/api/pesanan/:id_pesanan/transaksi", transaksiController.create);
+userRouter.patch('/api/pesanan/:id_pesanan/transaksi/:id_transaksi', transaksiController.update);
 
+// Metode
+userRouter.post("/api/metode", metodeController.create);
+userRouter.get("/api/metode", metodeController.getAll);
 
 export {
     userRouter

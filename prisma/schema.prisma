@@ -3,52 +3,135 @@ generator client {
 }
 
 datasource db {
-  provider = "postgres"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-
-
-model User {
-  id_user  Int      @id @default(autoincrement())
-  username  String   @db.VarChar(255) @unique
-  name      String   @db.VarChar(255)
-  email     String   @unique
-  password  String   @db.VarChar(255)
-  role      String   @db.VarChar(255)
-  token     String?  @db.VarChar(255)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  events    Event[]
-
-  @@map("users")
-}
-
 model Event {
-  id_event   Int      @id @default(autoincrement())
-  name        String   @db.VarChar(255)
-  description String   @db.VarChar(255)
-  date        DateTime
-  location    String   @db.VarChar(255)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  id_user Int
-  user     User    @relation(fields: [id_user], references: [id_user])
-  tikets   Tiket[]
+  id_event    Int       @id @default(autoincrement())
+  nama_event  String    @db.VarChar
+  waktu       DateTime
+  artis       String    @db.VarChar
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  id_admin    Int
+  admin       Admin     @relation(fields: [id_admin], references: [id_admin])
+  tikets      Tiket[]
 
   @@map("events")
 }
 
-model Tiket {
-  id_tiket  Int      @id @default(autoincrement())
-  name      String   @db.VarChar(255)
-  price     Float
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Admin {
+  id_admin Int     @id @default(autoincrement())
+  username String  @db.VarChar @unique
+  email    String  @db.VarChar @unique
+  password String  @db.VarChar
+  token    String? @db.VarChar
+  events   Event[]
 
-  id_event Int
-  event     Event @relation(fields: [id_event], references: [id_event])
+  @@map("admin")
+}
+
+model Pemesanan {
+  id_pesan        Int               @id @default(autoincrement())
+  id_customer     Int
+  tanggal         DateTime          @default(now())
+  customer        Customer          @relation(fields: [id_customer], references: [id_customer])
+  transaksis      Transaksi[]
+  detailPemesanan DetailPemesanan[]
+
+  @@map("pemesanan")
+}
+
+model Customer {
+  id_customer Int      @id @default(autoincrement())
+  username    String   @db.VarChar @unique
+  email       String   @db.VarChar @unique
+  password    String   @db.VarChar
+  token       String?  @db.VarChar
+  longitude   Decimal
+  latitude    Decimal
+  pemesanans  Pemesanan[]
+  carts       Cart[]
+
+  @@map("customer")
+}
+
+model Transaksi {
+  id_transaksi     Int              @id @default(autoincrement())
+  id_metode        Int
+  id_pesan         Int
+  waktu            DateTime         @default(now())
+  status           String           @db.VarChar
+  pemesanan        Pemesanan        @relation(fields: [id_pesan], references: [id_pesan])
+  metodePembayaran MetodePembayaran @relation(fields: [id_metode], references: [id_metode])
+
+  @@map("transaksi")
+}
+
+model Tiket {
+  id_tiket        Int               @id @default(autoincrement())
+  id_category     Int
+  harga           Int
+  stok            Int
+  id_event        Int
+  event           Event             @relation(fields: [id_event], references: [id_event])
+  category        Category          @relation(fields: [id_category], references: [id_category])
+  detailPemesanan DetailPemesanan[]
+  carts           Cart[]
+  qrCodes         QR[]
 
   @@map("tikets")
+}
+
+model Category {
+  id_category Int     @id @default(autoincrement())
+  nama        String  @db.VarChar
+  posisi      String  @db.VarChar
+  tikets      Tiket[]
+
+  @@map("category")
+}
+
+model DetailPemesanan {
+  id_pesan Int
+  id_tiket Int
+  quantity Int
+  total    Int
+  pemesanan Pemesanan @relation(fields: [id_pesan], references: [id_pesan])
+  tiket     Tiket     @relation(fields: [id_tiket], references: [id_tiket])
+
+  @@id([id_pesan, id_tiket])
+  @@map("detail_pemesanan")
+}
+
+model Cart {
+  id_cart  Int      @id @default(autoincrement())
+  id_user  Int
+  id_tiket Int
+  jumlah   Int
+  total    Int
+  customer Customer @relation(fields: [id_user], references: [id_customer])
+  tiket    Tiket    @relation(fields: [id_tiket], references: [id_tiket])
+
+  @@map("cart")
+}
+
+model MetodePembayaran {
+  id_metode  Int         @id @default(autoincrement())
+  nama       String      @db.VarChar
+  nomor      String
+  provider   String      
+  transaksis Transaksi[]
+
+  @@map("metode_pembayaran")
+}
+
+model QR {
+  kode_qr  String  @id @db.VarChar
+  is_used  Boolean
+  id_tiket Int
+  tiket    Tiket   @relation(fields: [id_tiket], references: [id_tiket])
+
+  @@map("qr")
 }

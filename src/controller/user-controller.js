@@ -10,7 +10,6 @@ const register = async (req, res, next) => {
         next(e);
     }
 }
-
 const login = async (req, res, next) => {
     try {
         const result = await userService.login(req.body);
@@ -21,10 +20,10 @@ const login = async (req, res, next) => {
         next(e);
     }
 }
-
 const get = async (req, res, next) => {
     try {
-        const username = req.user.username;
+        const username = req.customer.username;
+        console.log("Username from request:", username);
         const result = await userService.get(username);
         res.status(200).json({
             data: result
@@ -36,7 +35,7 @@ const get = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const username = req.user.username;
+        const username = req.customer.username;
         const request = req.body;
         request.username = username;
 

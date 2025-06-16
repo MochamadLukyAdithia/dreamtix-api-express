@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "transaksi" ALTER COLUMN "waktu" SET DEFAULT CURRENT_TIMESTAMP;

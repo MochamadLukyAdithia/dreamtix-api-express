@@ -8,53 +8,51 @@ import {
 import { prismaClient } from "../application/database.js";
 import { ResponseError } from "../error/response-error.js";
 
-const create = async (user, request) => {
+const create = async (admin, request) => {
   const event = validate(createEventValidation, request);
-  event.id_user = user.id_user;
-
+  event.id_admin = admin.id_admin;
   return prismaClient.event.create({
     data: event,
     select: {
+      id_admin: true,
       id_event: true,
-      name: true,
-      description: true,
-      date: true,
-      location: true
+      nama_event: true,
+      waktu: true,
+      artis: true,
     }
   });
 };
 const getAll = async (user) => {
   const events = await prismaClient.event.findMany({
     where: {
-      id_user: user.id_user
+      id_admin: user.id_admin
     },
     select: {
       id_event: true,
-      name: true,
-      description: true,
-      date: true,
-      location: true
+      id_admin: true,
+      nama_event: true,
+      waktu: true,
+      artis: true
     }
   });
-
   return events;
 };
-
-const get = async (user, eventId) => {
+const get = async (id_admin, eventId) => {
   eventId = validate(getEventValidation, eventId);
   const event = await prismaClient.event.findFirst({
     where: {
       id_event: eventId,
-      id_user: user.id_user
+      id_admin: id_admin
     },
     select: {
       id_event: true,
-      name: true,
-      description: true,
-      date: true,
-      location: true
+      id_admin: true,
+      nama_event: true,
+      waktu: true,
+      artis: true
     }
   });
+
 
   if (!event) {
     throw new ResponseError(404, "Event not found");
@@ -69,7 +67,7 @@ const update = async (id_event, request) => {
 
   const totalInDatabase = await prismaClient.event.count({
     where: {
-      id_event: Number(id_event),
+      id_event: parseInt(id_event),
     }
   });
 
@@ -79,31 +77,29 @@ const update = async (id_event, request) => {
 
   return prismaClient.event.update({
     where: {
-      id_event: Number(id_event),
+      id_event: parseInt(id_event),
     },
     data: {
-      name: event.name,
-      description: event.description,
-      date: event.date,
-      location: event.location,
+      nama_event: event.nama_event,
+      artis: event.artis,
+      waktu: event.waktu,
     },
     select: {
       id_event: true,
-      name: true,
-      description: true,
-      date: true,
-      location: true,
+      nama_event: true,
+      artis: true,
+      waktu: true,
     }
   });
 };
 
 
-const remove = async (user, id_event) => {
+const remove = async (id_event) => {
   id_event = validate(getEventValidation, id_event);
 
   const totalInDatabase = await prismaClient.event.count({
     where: {
-      id_event: id_event,
+      id_event: parseInt(id_event),
     }
   });
 
@@ -113,7 +109,7 @@ const remove = async (user, id_event) => {
 
   return prismaClient.event.delete({
     where: {
-      id_event: id_event
+      id_event: parseInt(id_event)
     }
   });
 };

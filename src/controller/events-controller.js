@@ -1,11 +1,14 @@
 import eventService from "../service/event-service.js";
 import {logger} from "../application/logging.js";
+import adminService from "../service/admin-service.js";
 
 const create = async (req, res, next) => {
     try {
-        const user = req.user;
+        const admin = req.admin;
         const request = req.body;
-        const result = await eventService.create(user, request);
+        const id_admin = await adminService.get(admin.username);
+        console.log("id_admin", id_admin);
+        const result = await eventService.create(id_admin, request);
         res.status(200).json({
             data: result
         })
@@ -13,13 +16,29 @@ const create = async (req, res, next) => {
         next(e);
     }
 }
-
+const getAll = async (req, res, next) => {
+    try {
+        const admin = req.admin;
+        console.log("admin", admin);
+        const data_admin = await adminService.get(admin.username);
+        console.log("id_admin", data_admin.id_admin);
+        const result = await eventService.getAll(data_admin.id_admin);
+        res.status(200).json({
+            data: result
+        })
+    } catch (e) {
+        next(e);
+    }
+}
 const get = async (req, res, next) => {
     try {
-        const user = req.user;
-        const contactId = req.params.id_event;
-        logger.info("contactId", contactId);
-        const result = await eventService.get(user, contactId);
+        const admin = req.admin;
+        console.log("admin", admin);
+        const id_event = req.params.id_event;
+        console.log("id_event", id_event);
+        const data_admin = await adminService.get(admin.username);
+        console.log("id_admin", data_admin.id_admin);
+        const result = await eventService.get(data_admin.id_admin, id_event);
         res.status(200).json({
             data: result
         })
@@ -27,15 +46,12 @@ const get = async (req, res, next) => {
         next(e);
     }
 }
-
 const update = async (req, res, next) => {
     try {
-        const user = req.user;
-        const contactId = req.params.id_event;
+        const id_event = req.params.id_event;
         const request = req.body;
-        logger.info("contactId =", contactId);
 
-        const result = await eventService.update(contactId, request);
+        const result = await eventService.update(id_event, request);
         res.status(200).json({
             data: result
         })
@@ -46,10 +62,10 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
     try {
-        const user = req.user;
-        const contactId = req.params.id_event;
+        const admin = req.admin;
+        const id_event = req.params.id_event;
 
-        await eventService.remove(user, contactId);
+        await eventService.remove(id_event);
         res.status(200).json({
             data: "OK"
         })
@@ -60,8 +76,8 @@ const remove = async (req, res, next) => {
 
 const getCurrent = async (req, res, next) => {
     try {
-        const user = req.user;
-        const result = await eventService.getAll(user);
+        const admin = req.admin;
+        const result = await eventService.getAll(admin);
         res.status(200).json({
             data: result
         })
@@ -72,7 +88,7 @@ const getCurrent = async (req, res, next) => {
 
 const search = async (req, res, next) => {
     try {
-        const user = req.user;
+        const admin = req.admin;
         const request = {
             name: req.query.name,
             email: req.query.email,
@@ -81,7 +97,7 @@ const search = async (req, res, next) => {
             size: req.query.size
         };
 
-        const result = await eventService.search(user, request);
+        const result = await eventService.search(admin, request);
         res.status(200).json({
             data: result.data,
             paging: result.paging
@@ -92,8 +108,8 @@ const search = async (req, res, next) => {
 }
 
 export default {
-    getCurrent,
     create,
+    getAll,
     get,
     update,
     remove,

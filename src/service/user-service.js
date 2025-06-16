@@ -1,19 +1,20 @@
 import {validate} from "../validation/validation.js";
+import {prismaClient} from "../application/database.js";
+import {ResponseError} from "../error/response-error.js";
+import bcrypt from "bcrypt";
+import { generateToken } from "../helper/jwtHelper.js";
+
+import {v4 as uuid} from "uuid";
 import {
     getUserValidation,
     loginUserValidation,
     registerUserValidation,
     updateUserValidation
 } from "../validation/user-validation.js";
-import {prismaClient} from "../application/database.js";
-import {ResponseError} from "../error/response-error.js";
-import bcrypt from "bcrypt";
-import {v4 as uuid} from "uuid";
-
 const register = async (request) => {
     const user = validate(registerUserValidation, request);
 
-    const countUser = await prismaClient.user.count({
+    const countUser = await prismaClient.customer.count({
         where: {
             username: user.username
         }
@@ -25,11 +26,11 @@ const register = async (request) => {
 
     user.password = await bcrypt.hash(user.password, 10);
 
-    return prismaClient.user.create({
+    return prismaClient.customer.create({
         data: user,
         select: {
             username: true,
-            name: true
+    
         }
     });
 }
@@ -37,7 +38,7 @@ const register = async (request) => {
 const login = async (request) => {
     const loginRequest = validate(loginUserValidation, request);
 
-    const user = await prismaClient.user.findUnique({
+    const user = await prismaClient.customer.findUnique({
         where: {
             username: loginRequest.username
         },
@@ -56,8 +57,11 @@ const login = async (request) => {
         throw new ResponseError(401, "Username or password wrong");
     }
 
-    const token = uuid().toString()
-    return prismaClient.user.update({
+    const token = generateToken({
+        username: user.username,
+        type: "customer"
+    });
+    return prismaClient.customer.update({
         data: {
             token: token
         },
@@ -72,16 +76,18 @@ const login = async (request) => {
 
 const get = async (username) => {
     username = validate(getUserValidation, username);
-
-    const user = await prismaClient.user.findUnique({
+    console.log("get user", username);
+    const user = await prismaClient.customer.findUnique({
         where: {
             username: username
         },
         select: {
             username: true,
-            name: true
+            email: true,
+            id_customer: true,
         }
     });
+    console.log("user found", user);
 
     if (!user) {
         throw new ResponseError(404, "user is not found");
@@ -120,7 +126,7 @@ const update = async (request) => {
             username: true,
             name: true
         }
-    })
+    });
 }
 
 const logout = async (username) => {
