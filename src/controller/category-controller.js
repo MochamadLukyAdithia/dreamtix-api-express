@@ -1,5 +1,6 @@
 import categoryService from "../service/category-service.js";
 import { logger } from "../application/logging.js";
+import metodeService from "../service/metode-service.js";
 
 const create = async (req, res, next) => {
     try {
@@ -54,9 +55,22 @@ catch (e) {
     next(e);
 }
 }
+const remove = async(req, res, next)=> {
+    try{
+    const id_metode = req.params.id_metode;
+    const result = await metodeService.remove(id_metode);
+    res.status(200).json({
+        data: result
+    })
+    } catch (e) {
+        console.log("ERROR", e);
+        next(e);
+    }
+
+}
 
 
 
 export default {
-    create, get, getAll, update
+    create, get, getAll, update, remove
 };

@@ -82,10 +82,18 @@ const update = async (id_category, request) => {
 
     return updatedCategory;
 }
+const remove = async (id_category) => {
+    return prismaClient.category.delete({
+        where: {
+            id_category: id_category
+        }
+    });
+}
 
 export default{
     create,
     get,
     update,
-    getAll
+    getAll,
+    remove
 }

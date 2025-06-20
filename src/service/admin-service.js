@@ -1,7 +1,7 @@
 import { prismaClient } from "../application/database.js";
 import { validate } from "../validation/validation.js";
 import { ResponseError } from "../error/response-error.js";
-import { loginAdminValidation,registerAdminValidation } from "../validation/admin-validation.js";
+import { loginAdminValidation,registerAdminValidation, updateAdminValidation } from "../validation/admin-validation.js";
 import { request } from "express";
 import { generateToken } from "../helper/jwtHelper.js";
 import bcrypt from "bcrypt";
@@ -84,9 +84,26 @@ const get = async (username) => {
 
     return admin;
 }
+const update = async (request, id_admin) => {
+    const admin = validate(updateAdminValidation, request);
+    const id_ad = parseInt(id_admin);
+    admin.password = await bcrypt.hash(admin.password, 10);
+    return prismaClient.admin.update({
+        where: {
+            id_admin: id_ad
+        },
+        data : admin,
+        select: {
+            id_admin: true,
+            username: true,
+            password:true
+        }
+    });
+}
 
 export default{
     login,
     register,
-    get
+    get,
+    update
 }

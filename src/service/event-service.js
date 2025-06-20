@@ -94,9 +94,8 @@ const update = async (id_event, request) => {
 };
 
 
-const remove = async (id_event) => {
+const remove = async (id_event, id_admin) => {
   id_event = validate(getEventValidation, id_event);
-
   const totalInDatabase = await prismaClient.event.count({
     where: {
       id_event: parseInt(id_event),
@@ -109,7 +108,10 @@ const remove = async (id_event) => {
 
   return prismaClient.event.delete({
     where: {
-      id_event: parseInt(id_event)
+      id_event: parseInt(id_event),
+      AND : {
+        id_admin: parseInt(id_admin)
+      }
     }
   });
 };
@@ -167,7 +169,7 @@ const search = async (user, request) => {
 };
 
 export default {
-  getAll,
+  getAll, 
   create,
   get,
   update,

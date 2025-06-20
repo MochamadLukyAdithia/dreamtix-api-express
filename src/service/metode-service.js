@@ -25,7 +25,38 @@ const getAll = async () => {
         }
     })
 }
+const update = async (id_metode, request) => {
+    const metode = validate(updateMetodeValidation, request)
+    return prismaClient.metodePembayaran.update({
+        where : {
+            id_metode: parseInt(id_metode)
+        },
+        data: metode
+    })
+}
+const remove = async(id_metode)=> {
+    return prismaClient.    metodePembayaran.delete({
+        where: {
+            id_metode: parseInt(id_metode)
+        }
+    })
+}
+const get = async(id_metode)=> {
+    return prismaClient.metodePembayaran.findFirst({
+        where: {
+            id_metode: parseInt(id_metode)
+        }, select: {
+            id_metode: true,
+            nama: true,
+            provider: true,
+            nomor: true
+        }
+    })
+}
 export default{
     create,
-    getAll
+    getAll,
+    update,
+    remove,
+    get
 }

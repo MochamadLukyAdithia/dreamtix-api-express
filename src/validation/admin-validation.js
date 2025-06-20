@@ -13,15 +13,15 @@ const registerAdminValidation = Joi.object({
         tlds: { allow: ['com', 'net'] }
     }), 
 });
-const updateUserValidation = Joi.object({
+const updateAdminValidation = Joi.object({
     username: Joi.string().max(255).optional(),
     password: Joi.string().max(255).optional(),
 });
-const getUserValidation = Joi.string().max(100).required();
+const getAdminValidation = Joi.string().max(100).required();
 
 export {
     loginAdminValidation,
     registerAdminValidation,
-    updateUserValidation,
-    getUserValidation
+    updateAdminValidation,
+    getAdminValidation
 }

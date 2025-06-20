@@ -19,6 +19,68 @@ const create = async (id_customer, request) => {
         }
     });
 }
+const getAll = async ( id_customer)=> {
+    console.log(id_customer);
+    return prismaClient.pemesanan.findMany({
+        where : {
+            id_customer: parseInt(id_customer)
+        },
+        select : {
+            id_customer: true,
+            id_pesan: true,
+            tanggal: true,
+            detailPemesanan: {
+                select : {
+                    id_pesan: true,
+                    quantity: true,
+                    total: true,
+                    id_tiket : true,
+                    tiket : {
+                        select : {
+                            id_category: true,
+                            harga : true,
+                            stok: true,
+                            category: {
+                                select: {
+                                    nama: true,
+                                    posisi: true
+                                }
+                            }
+
+                        }
+                    }
+                }
+            },
+            
+        }
+    });
+}
+const get = async(id_pesan, id_customer) => {
+    return prismaClient.pemesanan.findFirst({
+        where: {
+            id_customer: parseInt(id_customer),
+            AND : {
+                id_pesan: parseInt(id_pesan)
+            }
+        }
+        ,select: {
+            id_customer: true,
+            id_pesan: true,
+            tanggal: true
+        }
+    });
+}
+const update = async (id_pesan, pesanan) => {
+    return prismaClient.pemesanan.update({
+        where: {
+            id_pesan : parseInt(id_pesan)
+        },
+        data : pesanan
+    })
+}
 export default {
-    create
+    create,
+    getAll,
+    get,
+    update 
 }

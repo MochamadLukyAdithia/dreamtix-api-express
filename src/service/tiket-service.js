@@ -50,6 +50,35 @@ const create = async (id_event, request) => {
     return createdTiket;
 };
 
+const getAll = async (id_event) => {
+    const id_e = parseInt(id_event);
+    return prismaClient.tiket.findMany({
+        where : {
+            id_tiket: id_e
+        },
+        select: {
+            id_tiket : true,
+            id_category: true,
+            id_event : true,
+            harga: true,
+            stok: true,
+            event : {
+                select : {
+                    nama_event: true,
+                    artis: true,
+                    waktu: true
+                }
+            },
+            category : {
+                select : {
+                    id_category: true,
+                    nama: true,
+                    posisi: true
+                }
+            }
+        }
+    })
+}
 const get = async (id_tiket) => {
     id_tiket = await checkTiketMustExists(id_tiket);
     return prismaClient.tiket.findFirst({
@@ -112,5 +141,6 @@ export default {
     get,
     update,
     remove,
-    list
+    list,
+    getAll
 };

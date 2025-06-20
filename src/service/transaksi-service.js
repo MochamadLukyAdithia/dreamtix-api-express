@@ -15,6 +15,61 @@ const create = async (id_pesan, request) => {
     },
   });
 };
+const update = async(id_pesanan, id_transaksi, request) =>{
+  return prismaClient.transaksi.update({
+    where : {
+      id_transaksi : parseInt(id_transaksi),
+      AND : {
+        id_pesan: parseInt(id_pesanan)
+      }
+    }, 
+    data: request,
+    
+  })
+}
+const get = async(id_pesanan, id_transaksi)=> {
+  return prismaClient.transaksi.findFirst({
+    where: {
+      id_pesan: parseInt(id_pesanan),
+      AND: {
+        id_transaksi: parseInt(id_transaksi)
+      }
+    }, 
+    select : {
+      id_metode: true,
+      id_transaksi : true,
+      id_pesan : true,
+      status : true
+    }
+  });
+}
+const getAll = async(id_customer)=> {
+  return prismaClient.pemesanan.findMany(
+    {
+      where : {
+        id_customer: parseInt(id_customer)
+      },
+      select : {
+        id_customer: true,
+        id_pesan: true,
+        tanggal : true,
+        transaksis : {
+          select : {
+            id_metode : true,
+            status : true,
+            metodePembayaran : {
+              select : {
+                nama : true,
+                provider : true,
+                nomor : true
+              }
+            }
+          }
+        }
+      }
+    }
+  )
+}
 export default {
-  create,
+  create,update, get, getAll
 };
