@@ -70,7 +70,7 @@ userRouter.delete('/api/events/:id_event/tikets/:id_tiket', tiketController.remo
 userRouter.post("/api/pesanan/:id_pesanan/transaksi", transaksiController.create);
 userRouter.patch('/api/pesanan/:id_pesanan/transaksi/:id_transaksi', transaksiController.update);
 userRouter.get("/api/pesanan/:id_pesanan/transaksi/:id_transaksi", transaksiController.get);
-userRouter.get("api/pesanan/:id_pesanan/transaksi/",authenticate, transaksiController.getAll);
+userRouter.get("/api/pesanan/:id_pesanan/transaksi/",authenticate, transaksiController.getAll);
 
 // Metode
 userRouter.post("/api/metode", metodeController.create);

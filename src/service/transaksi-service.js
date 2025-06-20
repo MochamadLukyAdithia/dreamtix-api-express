@@ -5,6 +5,12 @@ import { validate } from "../validation/validation.js";
 const create = async (id_pesan, request) => {
   const transaksi = validate(createTransaksiValidation, request);
   transaksi.id_pesan = parseInt(id_pesan);
+
+  // Convert waktu to a proper Date object if it's a string
+  if (typeof transaksi.waktu === 'string') {
+    transaksi.waktu = new Date(transaksi.waktu); // ISO 8601 recommended
+  }
+
   return prismaClient.transaksi.create({
     data: transaksi,
     select: {
@@ -15,6 +21,7 @@ const create = async (id_pesan, request) => {
     },
   });
 };
+
 const update = async(id_pesanan, id_transaksi, request) =>{
   return prismaClient.transaksi.update({
     where : {

@@ -2,7 +2,7 @@ import { logger } from "../application/logging.js";
 import transaksiService from "../service/transaksi-service.js";
 const create = async (req, res, next) => {
   try {
-    const id_pesan = req.params.id_pesan;
+    const id_pesan = req.params.id_pesanan;
     console.log(id_pesan);
     const transaksi = req.body;
     console.log(transaksi);
