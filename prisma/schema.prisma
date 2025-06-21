@@ -1,10 +1,17 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["dataProxy"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+model Banner {
+  id_banner Int    @id @default(autoincrement())
+  image     String @db.VarChar
+
+  @@map("banners")
 }
 
 model Event {
@@ -12,6 +19,7 @@ model Event {
   nama_event  String    @db.VarChar
   waktu       DateTime
   artis       String    @db.VarChar
+  image       String    @db.VarChar // <- tambahkan ini
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   id_admin    Int
@@ -20,6 +28,7 @@ model Event {
 
   @@map("events")
 }
+
 
 model Admin {
   id_admin Int     @id @default(autoincrement())

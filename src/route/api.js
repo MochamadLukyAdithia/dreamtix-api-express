@@ -35,7 +35,7 @@ userRouter.delete("/api/cart/",authenticate, cartController.deleteAll);
 
 // Event
 userRouter.post('/api/events',authenticate ,eventController.create);
-userRouter.get('/api/events', authenticate, eventController.getAll);
+userRouter.get('/api/events', eventController.getAll);
 userRouter.get('/api/events/:id_event', authenticate, eventController.get);
 userRouter.patch('/api/events/:id_event', authenticate, eventController.update);
 userRouter.delete("/api/events/:id_event", authenticate, eventController.remove);

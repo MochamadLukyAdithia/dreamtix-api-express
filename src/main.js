@@ -1,6 +1,4 @@
-import {web} from "./application/web.js";
-import {logger} from "./application/logging.js";
+import { web } from './application/web.js';
 
-web.listen(3000, () => {
-  logger.info("Server running at http://localhost:3000");
-});
+// Vercel butuh export default app, bukan listen
+export default web;

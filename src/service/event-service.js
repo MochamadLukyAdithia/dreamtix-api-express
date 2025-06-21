@@ -22,11 +22,9 @@ const create = async (admin, request) => {
     }
   });
 };
-const getAll = async (user) => {
+const getAll = async () => {
   const events = await prismaClient.event.findMany({
-    where: {
-      id_admin: user.id_admin
-    },
+  
     select: {
       id_event: true,
       id_admin: true,

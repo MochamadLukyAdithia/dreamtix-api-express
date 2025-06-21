@@ -14,6 +14,9 @@
   "author": "Mochamad Luky Adithia",
   "license": "ISC",
   "type": "module",
+  "prisma": {
+    "seed": "node ./prisma/seed.js"
+  },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
     "@prisma/client": "^4.15.0",

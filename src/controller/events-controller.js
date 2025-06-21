@@ -19,11 +19,11 @@ const create = async (req, res, next) => {
 }
 const getAll = async (req, res, next) => {
     try {
-        const admin = req.admin;
-        console.log("admin", admin);
-        const data_admin = await adminService.get(admin.username);
-        console.log("id_admin", data_admin.id_admin);
-        const result = await eventService.getAll(data_admin.id_admin);
+        // const admin = req.admin;
+        // console.log("admin", admin);
+        // const data_admin = await adminService.get(admin.username);
+        // console.log("id_admin", data_admin.id_admin);
+        const result = await eventService.getAll();
         res.status(200).json({
             data: result
         })
