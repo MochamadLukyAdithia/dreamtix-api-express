@@ -57,10 +57,11 @@ const create = async (id_category,id_event, request) => {
 };
 
 const getAll = async (id_event) => {
+    console.log("ID EVENT", id_event);
     const id_e = parseInt(id_event);
     return prismaClient.tiket.findMany({
         where : {
-            id_tiket: id_e
+            id_event: id_e
         },
         select: {
             id_tiket : true,
