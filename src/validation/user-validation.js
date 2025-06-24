@@ -19,7 +19,7 @@ const getUserValidation = Joi.string().max(100).required();
 const updateUserValidation = Joi.object({
     username: Joi.string().max(255).optional(),
     password: Joi.string().max(255).optional(),
-    email: Joi.string().max(255).optional().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+    email: Joi.string().max(255).optional().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).optional,
     longitude: Joi.number().max(255).optional(),
     latitude: Joi.number().max(255).optional(),
 })

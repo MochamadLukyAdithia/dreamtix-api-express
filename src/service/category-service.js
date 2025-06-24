@@ -60,13 +60,30 @@ const get = async (id_category) => {
 
     return category;
 }
+const filter = async (nama) => {
+    const category = await prismaClient.category.findFirst({
+        where: {
+            nama: nama
+        },
+        select: {
+            id_category: true,
+            nama: true,
+            posisi:true
+        }
+    });
+
+    if (!category) {
+        throw new ResponseError(404, "Category not found");
+    }
+
+    return category;
+}
 const update = async (id_category, request) => {
     console.log("ID Category:", id_category);
-    const id_c = parseInt(validate(getCategoryValidation, id_category));
     const category = validate(updateCategoryValidation, request)
     const updatedCategory = await prismaClient.category.update({
         where: {
-            id_category: id_c
+            id_category: parseInt(id_category)
         },
         data: category,
         select: {
@@ -85,12 +102,13 @@ const update = async (id_category, request) => {
 const remove = async (id_category) => {
     return prismaClient.category.delete({
         where: {
-            id_category: id_category
-        }
+            id_category: parseInt(id_category)
+        },
     });
 }
 
 export default{
+    filter,
     create,
     get,
     update,

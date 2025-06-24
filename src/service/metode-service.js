@@ -35,7 +35,7 @@ const update = async (id_metode, request) => {
     })
 }
 const remove = async(id_metode)=> {
-    return prismaClient.    metodePembayaran.delete({
+    return prismaClient.metodePembayaran.delete({
         where: {
             id_metode: parseInt(id_metode)
         }

@@ -3,7 +3,11 @@ import Joi from "joi";
 const createTiketValidation = Joi.object({
   harga: Joi.number().min(1).required(),
   stok: Joi.number().min(1).required(),
-  id_category: Joi.number().min(1).positive().required(),
+  nama: Joi.number().min(1).positive().required(),
+  nama_event: Joi.string().max(255).required(),
+  waktu: Joi.date().default(Date.now()).required() ,
+  artis: Joi.string().max(255).required(),
+  image: Joi.string().max(10000).required(),
 });
 const getTiketValidation = Joi.number().positive().required();
 const updateTiketValidation = Joi.object({

@@ -21,22 +21,28 @@ const checkTiketMustExists = async (id_tiket) => {
     }
     return id_tiket;
 };
-const create = async (id_event, request) => {
-    const tiket = validate(createTiketValidation, request);
-    tiket.id_event = parseInt(id_event);
+const create = async (id_category,id_event, request) => {
+    console.log("ID CATEGORY", id_category);
+    console.log("ID EVENT", id_event);
 
     // Buat tiket dulu
     const createdTiket = await prismaClient.tiket.create({
-        data: tiket,
+        data: {
+            id_category : parseInt(id_category),
+            id_event: parseInt(id_event),
+            harga : request.harga,
+            stok : request.stok,
+        },
         select: {
             id_tiket: true,
             harga: true,
             stok: true,
         }
     });
+    console.log("HASIL ID TIKET", createdTiket)
 
     // Generate QR code sebanyak stok
-    const qrData = Array.from({ length: tiket.stok }, () => ({
+    const qrData = Array.from({ length: createdTiket.stok }, () => ({
         id_tiket: createdTiket.id_tiket,
         kode_qr: uuid(),
         is_used: false
@@ -79,6 +85,35 @@ const getAll = async (id_event) => {
         }
     })
 }
+
+const getAdmin = async () => {
+
+    return prismaClient.tiket.findMany({
+        
+        select: {
+            id_tiket : true,
+            id_category: true,
+            id_event : true,
+            harga: true,
+            stok: true,
+            event : {
+                select : {
+                    nama_event: true,
+                    artis: true,
+                    waktu: true,
+                    image : true
+                }
+            },
+            category : {
+                select : {
+                    id_category: true,
+                    nama: true,
+                    posisi: true
+                }
+            }
+        }
+    })
+}
 const get = async (id_tiket) => {
     id_tiket = await checkTiketMustExists(id_tiket);
     return prismaClient.tiket.findFirst({
@@ -98,11 +133,10 @@ const update = async (id_tiket, request) => {
 
     return prismaClient.tiket.update({
         where: {
-            id_tiket: id_tiket
+            id_tiket: parseInt(id_tiket)
         },
-        data: {
-            stok : request
-        },
+        data: request,
+        
         select: {
             id_tiket: true,
             harga: true,
@@ -113,34 +147,49 @@ const update = async (id_tiket, request) => {
     });
 };
 
-const remove = async (id_tiket) => {
+const remove = async (id_tiket, id_event) => {
     id_tiket = await checkTiketMustExists(id_tiket);
 
-    return prismaClient.tiket.delete({
+    await prismaClient.qR.deleteMany({
         where: {
             id_tiket: id_tiket
         }
     });
-};
-
-const list = async (id_event) => {
-    return prismaClient.tiket.findMany({
-        where: {
-            id_event: parseInt(id_event)
-        },
-        select: {
-            id_tiket: true,
-            name: true,
-            price: true,
+    await prismaClient.tiket.deleteMany({
+        where : {
+            id_tiket : id_tiket, 
+            OR : {
+                id_event : parseInt(id_event)
+            }
         }
     });
+    return await prismaClient.event.delete({
+        where : {
+            id_event : parseInt(id_event)
+        }
+    });
+    
 };
+
+// const list = async (id_event) => {
+//     return prismaClient.tiket.findMany({
+//         where: {
+//             id_event: parseInt(id_event)
+//         },
+//         select: {
+//             id_tiket: true,
+//             name: true,
+//             price: true,
+//         }
+//     });
+// };
 
 export default {
     create,
     get,
     update,
     remove,
-    list,
-    getAll
+    // list,
+    getAll,
+    getAdmin
 };

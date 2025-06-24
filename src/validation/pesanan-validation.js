@@ -5,7 +5,9 @@ const createPesananValidation = Joi.object({
     tanggal: Joi.string().optional(),
     quantity: Joi.number().min(1).required(),
     total: Joi.number().min(0).required(),
-    id_tiket : Joi.number().min(1).positive().required()
+    id_tiket : Joi.number().min(1).positive().required(),
+    id_metode : Joi.number().min(1).default(1).required(),
+    status :  Joi.string().min(0).default("BELUM").required()
 });
 
 const getPesananValidation = Joi.number().min(1).positive();

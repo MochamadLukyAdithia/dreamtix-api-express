@@ -59,9 +59,9 @@ const get = async(id_pesan, id_customer) => {
     return prismaClient.pemesanan.findFirst({
         where: {
             id_customer: parseInt(id_customer),
-            AND : {
+            OR : {
                 id_pesan: parseInt(id_pesan)
-            }
+        }
         }
         ,select: {
             id_customer: true,

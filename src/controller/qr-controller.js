@@ -46,9 +46,15 @@ const getMany = async (req, res, next) => {
   try {
     const request = req.body;
     const param = req.params;
-    const result = await qrService.getMany(request.quantity, param.id_tiket);
+    const result = await qrService.getMany(param.quantity, param.id_tiket);
+    
+// Tambahkan field `qr_url` ke setiap data
+const formattedResult = result.map(qr => ({
+  ...qr,
+  qr_url: `http://api.qrserver.com/v1/create-qr-code/?data=${qr.kode_qr}&size=200x200`
+}));
     res.status(200).json({
-      data: result,
+      data: formattedResult,
     });
   } catch (e) {
     logger.error("Error", e);

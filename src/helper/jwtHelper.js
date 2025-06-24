@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 const SECRET_KEY = process.env.JWT_SECRET || 'dreamtixtiketapi';
-const generateToken = (payload, expiresIn = '1h') => {
+const generateToken = (payload, expiresIn = '3h') => {
   return jwt.sign(payload, SECRET_KEY, { expiresIn });
 };
 const verifyToken = (token) => {

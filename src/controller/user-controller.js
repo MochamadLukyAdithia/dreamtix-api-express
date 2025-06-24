@@ -36,10 +36,11 @@ const get = async (req, res, next) => {
 const update = async (req, res, next) => {
     try {
         const username = req.customer.username;
+        const id_customer = await userService.get(username)
         const request = req.body;
         request.username = username;
 
-        const result = await userService.update(request);
+        const result = await userService.update(request, id_customer.id_customer);
         res.status(200).json({
             data: result
         });
@@ -50,11 +51,15 @@ const update = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
     try {
-        await userService.logout(req.user.username);
+            const customer = req.customer;
+            const id_customer = await userService.get(customer.username);
+          await userService.logout(id_customer.id_customer);
+     
         res.status(200).json({
             data: "OK"
         });
     } catch (e) {
+        console.log("ERROR", $e)
         next(e);
     }
 }

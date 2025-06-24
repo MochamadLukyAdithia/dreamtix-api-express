@@ -9,16 +9,21 @@ import { prismaClient } from "../application/database.js";
 import { ResponseError } from "../error/response-error.js";
 
 const create = async (admin, request) => {
-  const event = validate(createEventValidation, request);
-  event.id_admin = admin.id_admin;
+  console.log("REQUEST", request)
   return prismaClient.event.create({
-    data: event,
+    data: {
+      nama_event : request.nama_event,
+      artis : request.artis,
+      waktu : new Date(request.waktu),
+      image : request.image,
+      id_admin : parseInt(admin)
+    },
     select: {
       id_admin: true,
       id_event: true,
       nama_event: true,
       waktu: true,
-      artis: true,
+      artis: true
     }
   });
 };
@@ -30,7 +35,8 @@ const getAll = async () => {
       id_admin: true,
       nama_event: true,
       waktu: true,
-      artis: true
+      artis: true,
+      image: true
     }
   });
   return events;

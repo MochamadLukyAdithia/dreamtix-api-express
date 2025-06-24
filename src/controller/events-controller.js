@@ -5,11 +5,8 @@ import adminService from "../service/admin-service.js";
 
 const create = async (req, res, next) => {
     try {
-        const admin = req.admin;
-        const request = req.body;
-        const id_admin = await adminService.get(admin.username);
-        console.log("id_admin", id_admin);
-        const result = await eventService.create(id_admin, request);
+        const request = req.body
+        const result = await eventService.create(1, request);
         res.status(200).json({
             data: result
         })

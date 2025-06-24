@@ -5,11 +5,12 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Admin
+  const hashed = await bcrypt.hash('admin123', 10);
   const admin = await prisma.admin.create({
     data: {
       username: 'admin',
       email: 'admin@dreamtix.com',
-      password: 'admin123',
+      password: hashed,
       token: null,
     },
   });

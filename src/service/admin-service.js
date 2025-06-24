@@ -74,6 +74,7 @@ const get = async (username) => {
         },
         select: {
             username: true,
+            email: true,
             id_admin: true,
         }
     });

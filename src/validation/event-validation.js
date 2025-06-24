@@ -1,10 +1,11 @@
 import Joi from "joi";
 
 const createEventValidation = Joi.object({
-    id_admin: Joi.number().min(1).positive().optional(),
+    id_admin: Joi.number().min(1).positive().default(1).optional(),
     nama_event: Joi.string().max(255).required(),
-    waktu: Joi.date().default(Date.now()).required() ,// ini benar
+    waktu: Joi.date().default(Date.now()).required() ,
     artis: Joi.string().max(255).required(),
+    image: Joi.string().max(10000).required(),
 });
 
 const updateEventValidation = Joi.object({

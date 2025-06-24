@@ -28,9 +28,13 @@ const create = async (req, res, next) => {
 const get = async (req, res, next) => {
     try {
         const username = req.customer.username;
+        console.log(username)
         const id_pesan = req.params.id_pesan;
         const customer = await userService.get(username);
         const result = pesananService.get(id_pesan, customer.id_customer);
+         res.status(200).json({
+      data: result,
+    });
     } catch (e) {
         console.log("ERROR", e);
         next(e);
@@ -52,9 +56,9 @@ const getAll = async (req, res, next) => {
 };
 const update = async (req, res, next) => {
   try{
-      const id_pesanan = req.params.id_pesan;
-  const pesanan = req.body;
-  const result = await pesananService.update(id_pesanan, pesanan);
+    const id_pesanan = req.params.id_pesan;
+    const pesanan = req.body;
+    const result = await pesananService.update(id_pesanan, pesanan);
   res.status(200).json({
     message : "OK",
     data: result

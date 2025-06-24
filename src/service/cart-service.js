@@ -28,8 +28,9 @@ const update = async (request, id_cart, id_customer) => {
   const cart = validate(updateCartValidation, request);
   return prismaClient.cart.updateMany({
     where: {
-        id_cart: parseInt(id_cart),
-        id_user: parseInt(id_customer)
+        id_cart: parseInt(id_cart), AND : {
+          id_user : parseInt(id_customer)
+        }
     },
     data: cart
   });

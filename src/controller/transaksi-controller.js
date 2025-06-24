@@ -1,5 +1,7 @@
 import { logger } from "../application/logging.js";
+import adminService from "../service/admin-service.js";
 import transaksiService from "../service/transaksi-service.js";
+import userService from "../service/user-service.js";
 const create = async (req, res, next) => {
   try {
     const id_pesan = req.params.id_pesanan;
@@ -17,11 +19,11 @@ const create = async (req, res, next) => {
 };
 const update = async (req, res, next) => {
   try {
-    const id_pesanan = req.params.id_pesanan;
+  
     const id_transaksi = req.params.id_transaksi;
     const transaksi = req.body;
     const result = await transaksiService.update(
-      id_pesanan,
+   
       id_transaksi,
       transaksi
     );
@@ -52,11 +54,31 @@ const get = async (req, res, next) => {
 };
 const getAll = async (req, res, next) => {
    try {
+    const customer = req.customer;
+    console.log("username" , customer.username);
+    const id_customer = await userService.get(customer.username);
     const result = await transaksiService.getAll(
+      id_customer.id_customer
     );
     res.status(200).json({
       data: result,
     });
+  } catch (e) {
+    console.log("ERROR", e);
+    next(e);
+  }
+};
+const getAdmin = async (req, res, next) => {
+   try {
+    //   const admin = req.admin;
+    // const id_admin = await adminService.get(admin.username);
+    const result = await transaksiService.getAdmin(
+    );
+    // if (id_admin != null) {
+      res.status(200).json({
+        data: result,
+      });
+    // }
   } catch (e) {
     console.log("ERROR", e);
     next(e);
@@ -67,4 +89,5 @@ export default {
   update,
   get,
   getAll,
+  getAdmin
 };

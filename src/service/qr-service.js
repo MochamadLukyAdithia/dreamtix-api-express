@@ -28,7 +28,9 @@ const getAll = async (id_tiket) => {
     id_tiket = parseInt(id_tiket);
     const qrs = await prismaClient.qR.findMany({
         where: {
-            id_tiket: id_tiket
+            id_tiket: id_tiket , AND : {
+                is_used: false
+            }
         },
         select: {
             kode_qr: true,
@@ -51,7 +53,7 @@ const getMany = async (quantity, id_tiket) => {
             id_tiket : id,
             is_used : false
         },
-        take: quantity,
+        take: parseInt(quantity),
         select : {
             kode_qr : true,
             id_tiket:true,
