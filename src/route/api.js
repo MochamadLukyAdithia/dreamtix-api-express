@@ -64,7 +64,7 @@ userRouter.patch('/api/events/:id_event/tikets/:id_tiket/qr/:kode_qr', qrControl
 userRouter.post('/api/event/tikets', tiketController.create);
 userRouter.get('/api/events/:id_event/tikets/:id_tiket', tiketController.get);
 userRouter.put('/api/events/:id_event/tikets/:id_tiket', tiketController.update);
-userRouter.get("/api/events/:id_event/tikets/", tiketController.getAll);
+userRouter.get("/api/events/:id_event/tikets/", authenticate,tiketController.getAll);
 userRouter.get("/api/event/tikets", tiketController.getAdmin);
 userRouter.delete('/api/events/:id_event/tikets/:id_tiket',authenticate, tiketController.remove);
 
