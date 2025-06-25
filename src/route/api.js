@@ -58,7 +58,7 @@ userRouter.patch("/api/pesanan/:id_pesan", pesananController.update);
 userRouter.get('/api/tikets/:id_tiket/qr/sender', qrController.sender);
 userRouter.get('/api/tikets/:id_tiket/qr', qrController.getAll);
 userRouter.get('/api/tikets/:id_tiket/qr/:quantity', qrController.getMany);
-userRouter.patch('/api/events/:id_event/tikets/:id_tiket/qr/:kode_qr', qrController.update);
+userRouter.patch('/api/qr/:kode_qr', qrController.update);
 
 // Tiket
 userRouter.post('/api/event/tikets', tiketController.create);
