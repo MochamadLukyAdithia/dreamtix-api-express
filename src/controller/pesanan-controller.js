@@ -3,6 +3,7 @@ import { logger } from "../application/logging.js";
 import userService from "../service/user-service.js";
 import detailService from "../service/detail-service.js";
 import tiketService from "../service/tiket-service.js";
+import transaksiService from "../service/transaksi-service.js";
 const create = async (req, res, next) => {
   try {
     const request = req.body;
@@ -16,9 +17,10 @@ const create = async (req, res, next) => {
     const tiket = await tiketService.get(request.id_tiket);
     await tiketService.update(request.id_tiket, tiket.stok - request.quantity);
     const tiket2 = await tiketService.get(request.id_tiket);
+    await transaksiService.createAuto(result.id_pesan, request);
     res.status(200).json({
       data: result2,
-      tiket: tiket2,
+      tiket: tiket2,  
     });
   } catch (e) {
     logger.error("Error creating pesanan:", e);

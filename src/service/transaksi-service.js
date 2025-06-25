@@ -21,6 +21,32 @@ const create = async (id_pesan, request) => {
     },
   });
 };
+const createAuto = async (id_pesan, request) => {
+  // Pastikan waktu adalah objek Date
+  if (typeof request.waktu === "string") {
+    request.waktu = new Date(request.waktu);
+  }
+
+  return prismaClient.transaksi.create({
+    data: {
+      waktu: request.waktu,
+      status: request.status,
+      pemesanan: {
+        connect: { id_pesan: parseInt(id_pesan) }
+      },
+      metodePembayaran: {
+        connect: { id_metode: parseInt(request.id_metode) }
+      }
+    },
+    select: {
+      id_metode: true,
+      id_pesan: true,
+      status: true,
+      waktu: true
+    }
+  });
+};
+
 
 const update = async (id_transaksi, request) => {
   return prismaClient.transaksi.update({
@@ -153,4 +179,5 @@ export default {
   get,
   getAll,
   getAdmin,
+  createAuto
 };

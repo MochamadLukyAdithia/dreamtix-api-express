@@ -130,13 +130,14 @@ const get = async (id_tiket) => {
 };
 
 const update = async (id_tiket, request) => {
-    id_tiket = await checkTiketMustExists(id_tiket);
 
     return prismaClient.tiket.update({
         where: {
             id_tiket: parseInt(id_tiket)
         },
-        data: request,
+        data: {
+            stok: request
+        },
         
         select: {
             id_tiket: true,
