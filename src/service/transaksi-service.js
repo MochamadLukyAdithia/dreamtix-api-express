@@ -57,6 +57,16 @@ const update = async (id_transaksi, request) => {
     data: request,
   });
 };
+
+
+const updateUser = async (id_transaksi, request) => {
+  return prismaClient.transaksi.updateMany({
+    where: {
+    id_pesan : parseInt(id_transaksi)
+    },
+    data: request,
+  });
+};
 const get = async (id_pesanan, id_transaksi) => {
   return prismaClient.transaksi.findFirst({
     where: {
@@ -179,5 +189,6 @@ export default {
   get,
   getAll,
   getAdmin,
-  createAuto
+  createAuto,
+  updateUser
 };

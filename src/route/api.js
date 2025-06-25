@@ -52,7 +52,7 @@ userRouter.delete("/api/category/:id_category", authenticate,categoryController.
 userRouter.post('/api/pesanan/',authenticate, pesananController.create);
 userRouter.get('/api/pesanan',authenticate, pesananController.getAll);
 userRouter.get("/api/pesanan/:id_pesan",authenticate, pesananController.get);
-userRouter.patch("/api/pesanana/:id_pesan", pesananController.update);
+userRouter.patch("/api/pesanan/:id_pesan", pesananController.update);
 
 // Qr
 userRouter.get('/api/tikets/:id_tiket/qr/sender', qrController.sender);
@@ -70,7 +70,8 @@ userRouter.delete('/api/events/:id_event/tikets/:id_tiket',authenticate, tiketCo
 
 // Transaksi
 userRouter.post("/api/pesanan/:id_pesanan/transaksi", transaksiController.create);
-userRouter.patch('/api/transaksi/:id_transaksi', transaksiController.update);
+userRouter.patch('/api/transaksi/admin/:id_transaksi', authenticate,transaksiController.update);
+userRouter.patch('/api/transaksi/:id_transaksi', authenticate,transaksiController.updateUser);
 userRouter.get("/api/pesanan/:id_pesanan/transaksi/:id_transaksi", transaksiController.get);
 userRouter.get("/api/transaksi", authenticate,transaksiController.getAll);
 userRouter.get("/api/transaksi/admin", transaksiController.getAdmin);

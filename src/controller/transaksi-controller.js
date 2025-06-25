@@ -19,17 +19,47 @@ const create = async (req, res, next) => {
 };
 const update = async (req, res, next) => {
   try {
-  
+    const admin = req.admin;
+    console.log(admin);
+    const dataAdmin= await adminService.get(admin)
     const id_transaksi = req.params.id_transaksi;
     const transaksi = req.body;
+
     const result = await transaksiService.update(
    
       id_transaksi,
       transaksi
     );
-    res.status(200).json({
+    if (dataAdmin != null){
+        res.status(200).json({
       data: result,
     });
+    }
+  
+  } catch (e) {
+    console.log("ERROR", e);
+    next(e);
+  }
+};
+const updateUser = async (req, res, next) => {
+  try {
+  
+    const user = req.customer;
+       console.log(user);
+    const datauser= await userService.get(user.username)
+    const id_transaksi = req.params.id_transaksi;
+    const transaksi = req.body;
+
+    const result = await transaksiService.updateUser(
+   
+      id_transaksi,
+      transaksi
+    );
+    if (datauser != null){
+        res.status(200).json({
+      data: result,
+    });
+    }
   } catch (e) {
     console.log("ERROR", e);
     next(e);
@@ -89,5 +119,6 @@ export default {
   update,
   get,
   getAll,
-  getAdmin
+  getAdmin,
+  updateUser
 };
